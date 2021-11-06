@@ -2,11 +2,10 @@ window.onload = function () {
 	const table = document.querySelector("main table tbody");
 	const keyword_input = document.querySelector("input[type=\"text\"]");
 	const form = document.getElementsByTagName("form")[0];
-	// const clearButton = document.getElementById("clear");
 	const downloadLink = document.getElementById("download");
 
 	// checkbox
-	const checkVolume = document.getElementById("check-volume");
+	// const checkVolume = document.getElementById("check-volume");
 	const checkName = document.getElementById("check-name");
 	const checkTitle = document.getElementById("check-title");
 	const checkRemarks = document.getElementById("check-remarks");
@@ -15,7 +14,8 @@ window.onload = function () {
 	const isIOS = ["iPhone", "iPad", "iPod"].some(name => navigator.userAgent.indexOf(name) > -1);
 	const lineLimit = 500;
 
-	let data = null;
+	let covers = null;
+	let contents = null;
 	let timeout = void 0;
 
 	keyword_input.addEventListener("keydown", (evt) => {
@@ -26,33 +26,14 @@ window.onload = function () {
 		}
 	});
 
-	// clearButton.addEventListener('click', (evt) => {
-	// 	evt.stopPropagation();
-	// 	keyword_input.value = "氏名";
-
-	// 	checkVolume.checked = true;
-	// 	checkName.checked = true;
-	// 	checkTitle.checked = true;
-	// 	checkRemarks.checked = true;
-	// });
-
 	// display a line of the table
-	const createLine = (line) => {
+	const createLine = (cover, line) => {
 		let tr = document.createElement("tr");
 		table.appendChild(tr);
 
-		// let url = `https://kdb.tsukuba.ac.jp/syllabi/2021/${line[0]}/jpn`;
-		// let methods = ["対面", "オンデマンド", "同時双方向"].filter(it => line[10].indexOf(it) > -1);
-
-		// tr.innerHTML += `<td>${line[0]}<br/>${line[1]}<br/><a href="${url}" class="syllabus" target="_blank">シラバス</a></td>`;
-		// tr.innerHTML += `<td>${line[3]}単位<br/>${line[4]}年次</td>`;
-		// tr.innerHTML += `<td>${line[5]}<br/>${line[6]}</td>`;
-		// tr.innerHTML += `<td>${line[7].replace(/,/g, "<br/>")}</td>`;
-		// tr.innerHTML += `<td>${line[8].replace(/,/g, "<br/>")}</td>`;
-
+		tr.innerHTML += `<td>${cover[3]}</td>`;
 		tr.innerHTML += `<td>${line[0]}</td>`;
 		tr.innerHTML += `<td>${line[1]}</td>`;
-		// tr.innerHTML += `<td>${line[2]}</td>`;
 		tr.innerHTML += `<td>${line[3]}</td>`;
 		tr.innerHTML += `<td>${line[4]}</td>`;
 		tr.innerHTML += `<td>${line[5]}</td>`;
@@ -71,43 +52,34 @@ window.onload = function () {
 			return;
 
 		for (; ;) {
-			const line = data[index];
+			const line = contents[index];
 
 			if (typeof line === 'undefined') {
 				return;
 			}
 
 			// keyword
-			let matchesVolume = checkVolume.checked ? line[0].indexOf(options.keyword) != 0 : true;
+			// let matchesVolume = checkVolume.checked ? line[0].indexOf(options.keyword) != 0 : true;
 			let matchesName = checkName.checked ? line[3].match(regex) == null : true;
 			let matchesTitle = checkTitle.checked ? line[4].match(regex) == null : true;
 			let matchesRemarks = checkRemarks.checked ? line[7].match(regex) == null : true;
 
 			let matchesKeyword = options.keyword != "" &&
-				(matchesVolume && matchesName && matchesTitle && matchesRemarks);
+			(matchesName && matchesTitle && matchesRemarks);
+				// (matchesVolume && matchesName && matchesTitle && matchesRemarks);
 
-			// other options
-			// let missMatchesSeason = options.season != "null" && line[5].indexOf(options.season) < 0;
-			// let missMatchesModule = options.module_ != "null" && line[5].indexOf(options.module_) < 0;
-			// let missMatchesDay = options.day != "null" && line[6].indexOf(options.day) < 0;
-			// let missMatchesPeriod = options.period != "null" && line[6].indexOf(options.period) < 0;
-			// let missMatchesOnline = options.online != "null" && line[10].indexOf(options.online) < 0;
-			// let missMatchesReq_A = options.req_A != "null" && options.req_A != line[12];
-
-			if (
-				matchesKeyword) {
-				// matchesKeyword ||
-				// missMatchesSeason ||
-				// missMatchesModule ||
-				// missMatchesDay ||
-				// missMatchesPeriod ||
-				// missMatchesOnline ||
-				// missMatchesReq_A) {
+			if (matchesKeyword) {
 				index++;
 				continue;
 			}
 
-			createLine(line);
+			// var result = covers.Select((n) => n[2] == line[0]);
+			var cover = covers.find((n) => n[2] == line[0]);
+			// console.log(cover[2]);
+			// console.log(cover[3]);
+			console.log('発行年: %s 通巻号数: %s',cover[3],cover[2]);
+
+			createLine(cover, line);
 			timeout = setTimeout(() => updateTable(options, index + 1, ++displayedIndex), 0);
 			break;
 		}
@@ -142,10 +114,10 @@ window.onload = function () {
 		}
 	}
 
-	// download CSV file: `kdb_YYYYMMDDhhmmdd.csv`
+	// download CSV file: `ips_YYYYMMDDhhmmdd.csv`
 	const downloadCSV = () => {
 		makeCSV(
-			downloadLink, document.querySelector("main table"), `kdb_${getDateString()}.csv`);
+			downloadLink, document.querySelector("main table"), `ips_${getDateString()}.csv`);
 	}
 
 	// get YYYYMMDDhhmmdd
@@ -183,7 +155,11 @@ window.onload = function () {
 	submit.onclick = search;
 	downloadLink.onclick = downloadCSV;
 
+	fetch("Covers0.json")
+		.then(response => response.json())
+		.then(json => { covers = json; search(null); });
+
 	fetch("Contents0.json")
 		.then(response => response.json())
-		.then(json => { data = json; search(null); });
+		.then(json => { contents = json; search(null); });
 };

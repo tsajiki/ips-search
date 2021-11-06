@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>食虫植物研究会々誌検索</title>
+	<title>食虫植物研究会 / 会誌データベース</title>
 	<meta charset="utf-8">
 	<link href="style.css" rel="stylesheet" />
 	<script src="script.js"></script>
@@ -11,13 +11,16 @@
 <body>
 	<header>
 		<div class="content">
+				<h3>
+					<p>食虫植物研究会 / 会誌検索</p>
+				</h3
 			<form>
 				<p>
 					<span class="h4">検索語</span>
 					<input type="text" placeholder="正規表現に対応" /> <a href="#" id="submit">検索</a>
-					<label><input type="checkbox" id="check-volume" checked />通巻</label>
+					<!-- <label><input type="checkbox" id="check-volume" checked />通巻</label> -->
 					<label><input type="checkbox" id="check-name" checked />氏名</label>
-					<label><input type="checkbox" id="check-title" />題名</label>
+					<label><input type="checkbox" id="check-title" checked />題名</label>
 					<label><input type="checkbox" id="check-remarks" checked />備考</label>
 				</p>
 				<!-- <p>
@@ -32,6 +35,7 @@
 			<table>
 				<thead>
 					<tr>
+						<th>発行年</th>
 						<th>通巻</th>
 						<th>区分</th>
 						<th>氏名</th>
