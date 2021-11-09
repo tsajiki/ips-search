@@ -6,9 +6,8 @@ html, body {
 
 header {
 	width: 100%;
-	position:fixed;
+	margin: 1rem auto 0 auto;
 	top: 0;
-	background: #CCFFCC;
 }
 
 header form {
@@ -24,9 +23,10 @@ header p + p {
 }
 
 header div.content {
-	width: 1000px;
-	margin: auto;
+	width: 1100px;
+	margin: 0 auto 0 auto;
 	padding: 0.6rem 1rem;
+	background: #CCFFCC;
 }
 
 header .h1 {
@@ -61,10 +61,9 @@ a#submit {
 	display: inline-block;
 }
 
-
 #page {
 	width: 1100px;
-	margin: 8rem auto 0 auto;
+	margin: 1rem auto 0 auto;
 	padding: 0 1rem;
 }
 
@@ -72,35 +71,37 @@ table {
 	width: 100%;
 	font-size: 0.9rem;
 	border-spacing: 0;
-	table-layout: fixed;
-	overflow-x: scroll;
+	table-layout: auto;
+	/* overflow-x: scroll; */
 	border-collapse: collapse;
 }
 
-tr th {
+th {
+	width: 2%;
 	color: #fff;
 	font-weight: normal;
-	padding: 0.2rem 0;
+	padding: 0.4rem;
+	text-align: center;
 	background: green;
 }
 
 td {
-	line-height: 1.4em;
-	padding: 0.5rem 0;
+	line-height: 1.2em;
+	padding: 0.4rem;
 	border-bottom: solid 1px #ccc;
-	vertical-align: top;
+	/* vertical-align:auto; */
 }
 
-td {
-	padding-right: 0.5rem;
-}
+/* td {
+	padding-right: 0.4rem;
+} */
 
-tr *:nth-child(1) { width: 2rem;}
-tr *:nth-child(2) { width: 1rem; text-align: right;}
-tr *:nth-child(3) { width: 2rem;}
-tr *:nth-child(4) { width: 3rem; }
+tr *:nth-child(1) { width: 6%; }
+tr *:nth-child(2) { width: 4%; text-align: right;}
+tr *:nth-child(3) { width: 10%;}
+tr *:nth-child(4) { width: 10%; }
 tr *:nth-child(5) { width: 6rem; }
-tr *:nth-child(6) { width: 1rem; text-align: right;}
+tr *:nth-child(6) { width: 4%; text-align: right;}
 tr *:nth-child(7) { width: 6rem; }
 
 footer {
