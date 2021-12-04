@@ -1,6 +1,9 @@
 window.onload = function () {
 	const table = document.querySelector("main table tbody");
-	const keyword_input = document.querySelector("input[type=\"text\"]");
+	// const keyword_input = document.querySelector("input[type=\"text\"]");
+	const keyword_input1 = document.querySelector("#input1");
+	const keyword_input2 = document.querySelector("#input2");
+	const keyword_input3 = document.querySelector("#input3");
 	const form = document.getElementsByTagName("form")[0];
 	const downloadLink = document.getElementById("download");
 
@@ -18,7 +21,7 @@ window.onload = function () {
 	let contents = null;
 	let timeout = void 0;
 
-	keyword_input.addEventListener("keydown", (evt) => {
+	keyword_input1.addEventListener("keydown", (evt) => {
 		const KEYCODE_ENTER = 13;
 		if (evt.keyCode === KEYCODE_ENTER) {
 			evt.preventDefault();
@@ -43,7 +46,7 @@ window.onload = function () {
 
 	// update the table
 	const updateTable = (options, index, displayedIndex) => {
-		let regex = new RegExp(options.keyword);
+		let regex = new RegExp(options.keyword, "igu");
 
 		index = typeof index === 'undefined' ? 0 : index;
 		displayedIndex = typeof displayedIndex === "undefined" ? 0 : displayedIndex;
@@ -59,25 +62,65 @@ window.onload = function () {
 			}
 
 			// keyword
-			// let matchesVolume = checkVolume.checked ? line[0].indexOf(options.keyword) != 0 : true;
-			let matchesName = checkName.checked ? line[3].match(regex) == null : true;
-			let matchesTitle = checkTitle.checked ? line[4].match(regex) == null : true;
-			let matchesRemarks = checkRemarks.checked ? line[7].match(regex) == null : true;
+			// let matchesName = checkName.checked ? line[3].match(regex) == null : true;
+			// let matchesTitle = checkTitle.checked ? line[4].match(regex) == null : true;
+			// let matchesRemarks = checkRemarks.checked ? line[7].match(regex) == null : true;
 
-			let matchesKeyword = options.keyword != "" &&
-			(matchesName && matchesTitle && matchesRemarks);
-				// (matchesVolume && matchesName && matchesTitle && matchesRemarks);
+			// let matchesKeyword = options.keyword != "" &&
+			// (matchesName && matchesTitle && matchesRemarks);
 
-			if (matchesKeyword) {
+			let matchesName = checkName.checked ? line[3].match(regex) != null : false;
+			let matchesTitle = checkTitle.checked ? line[4].match(regex) != null : false;
+			let matchesRemarks = checkRemarks.checked ? line[7].match(regex) != null : false;
+
+			let matchesKeyword = matchesName || matchesTitle || matchesRemarks;
+
+
+			// if (matchesKeyword) {
+			// 	index++;
+			// 	continue;
+			// }
+
+			// if (options.keyword != "") {
+			// 	index++;
+			// 	continue;
+			// }
+
+			// if (keyword_input2.value != "" && Number(line[0]) < keyword_input2.value) {
+			// 	index++;
+			// 	continue;
+			// }
+
+			// if (keyword_input3.value != "" && Number(line[0]) > keyword_input3.value) {
+			// 	index++;
+			// 	continue;
+			// }
+
+			// var cover = covers.find((n) => n[2] == line[0]);
+
+			// console.log('発行年: %s 通巻号数: %s',cover[3],cover[2]);
+
+			if (options.keyword != "" && !matchesKeyword) {
 				index++;
 				continue;
 			}
 
-			// var result = covers.Select((n) => n[2] == line[0]);
+			if (keyword_input2.value != "" && Number(line[0]) < keyword_input2.value) {
+				index++;
+				continue;
+			}
+
+			if (keyword_input3.value != "" && Number(line[0]) > keyword_input3.value) {
+				index++;
+				continue;
+			}
+
 			var cover = covers.find((n) => n[2] == line[0]);
-			// console.log(cover[2]);
-			// console.log(cover[3]);
-			console.log('発行年: %s 通巻号数: %s',cover[3],cover[2]);
+
+			if (typeof cover === 'undefined') {
+				index++;
+				continue;
+			}
 
 			createLine(cover, line);
 			timeout = setTimeout(() => updateTable(options, index + 1, ++displayedIndex), 0);
@@ -143,8 +186,13 @@ window.onload = function () {
 		}
 		let options = {};
 
-		if (keyword_input.value === '') return;
-		options.keyword = keyword_input.value;
+		if (keyword_input1.value === ''　&&
+			keyword_input2.value === '' &&
+			keyword_input3.value === '')
+			return;
+		options.keyword = keyword_input1.value;
+		// keyword_input2
+		// console.log(keyword_input2.value);
 
 		clearTimeout(timeout);
 

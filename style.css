@@ -36,8 +36,22 @@ header .h1 {
 	display: inline-block;
 }
 
-header input[type="text"], header select {
+header input[type="text"] {
 	width: 15rem;
+	height: 1.8rem;
+	line-height: 1.8rem;
+	margin-right: 0.2rem;
+	padding:0 0.4rem;
+	border: none;
+	border-radius: 4px;
+	box-sizing: content-box;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+	vertical-align: top;
+	-webkit-appearance: none;
+}
+
+#input2, #input3 {
+	width: 3rem;
 	height: 1.8rem;
 	line-height: 1.8rem;
 	margin-right: 0.2rem;

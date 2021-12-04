@@ -17,11 +17,17 @@
 			<form>
 				<p>
 					<span class="h4">検索語</span>
-					<input type="text" placeholder="正規表現に対応" /> <a href="#" id="submit">検索</a>
+					<input type="text" placeholder="検索語を入力" id="input1" /> <a href="#" id="submit">検索</a>
 					<!-- <label><input type="checkbox" id="check-volume" checked />通巻</label> -->
 					<label><input type="checkbox" id="check-name" checked />氏名</label>
 					<label><input type="checkbox" id="check-title" checked />題名</label>
 					<label><input type="checkbox" id="check-remarks" checked />備考</label>
+				</p>
+				<p>
+					<span class="h4">通巻　</span>
+					<input type="number" min="1" placeholder="自" id="input2" />
+					<span class="h4">～</span>
+					<input type="number" min="1" placeholder="至" id="input3" />
 				</p>
 				<!-- <p>
 					<a href="#" id="clear">検索条件をクリア</a>
