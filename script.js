@@ -139,9 +139,6 @@ window.onload = function () {
 			row.length = 0;
 			for (c = 0; c < table_.rows[r].cells.length; c++) {
 				field = table_.rows[r].cells[c].innerText.trim();
-				if (r !== 0 && c === 0) {
-					field = field.slice(0, -5);
-				}
 				row.push(escaped.test(field) ? '"' + field.replace(e, '""') + '"' : field);
 			}
 			csv.push(row.join(','));
