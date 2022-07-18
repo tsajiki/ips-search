@@ -200,11 +200,11 @@ window.onload = function () {
 	submit.onclick = search;
 	downloadLink.onclick = downloadCSV;
 
-	fetch("Covers0.json")
+	fetch("Covers.json")
 		.then(response => response.json())
 		.then(json => { covers = json; search(null); });
 
-	fetch("Contents0.json")
+	fetch("Contents.json")
 		.then(response => response.json())
 		.then(json => { contents = json; search(null); });
 };
