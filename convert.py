@@ -8,7 +8,9 @@ def func_convert(input_file):
 		csvreader = csv.reader(fp, delimiter='\t')
 		output = [row for row in csvreader]
 
-	# print(output)
+		output.pop(0)
+		output.pop(0)
+		#print(output)
 
 	output_file = os.path.splitext(os.path.basename(input_file))[0]
 	output_file += '.json'
