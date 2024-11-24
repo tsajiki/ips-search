@@ -1,3 +1,9 @@
+#0.使用方法
+#1.食虫植物研究会々誌データの入力ファイル（Covers.txt、Contents.txt）をディレクトリ C:\Work に置く。
+#2.Anaconda Prompt を開く。
+#3.convert.py を実行する。C:\Work>python convert.py
+#4.出力ファイル（Covers.json、Contents.json）ができる。
+
 import csv
 import json
 import os
