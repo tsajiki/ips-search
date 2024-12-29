@@ -1,210 +1,151 @@
 window.onload = function () {
-	const table = document.querySelector("main table tbody");
-	// const keyword_input = document.querySelector("input[type=\"text\"]");
-	const keyword_input1 = document.querySelector("#input1");
-	const keyword_input2 = document.querySelector("#input2");
-	const keyword_input3 = document.querySelector("#input3");
-	const form = document.getElementsByTagName("form")[0];
-	const downloadLink = document.getElementById("download");
+    const table = document.querySelector("main table tbody");
+    const keywordInput1 = document.querySelector("#input1");
+    const keywordInput2 = document.querySelector("#input2");
+    const keywordInput3 = document.querySelector("#input3");
+    const form = document.querySelector("form");
+    const resultElement = document.getElementById("result");
+    const downloadLink = document.getElementById("download");
 
-	// checkbox
-	// const checkVolume = document.getElementById("check-volume");
-	const checkName = document.getElementById("check-name");
-	const checkTitle = document.getElementById("check-title");
-	const checkRemarks = document.getElementById("check-remarks");
+    const isIOS = ["iPhone", "iPad", "iPod"].some(name => navigator.userAgent.indexOf(name) > -1);
+    const lineLimit = 500;
 
-	// if the device is iOS, displayed lines are limited 500.
-	const isIOS = ["iPhone", "iPad", "iPod"].some(name => navigator.userAgent.indexOf(name) > -1);
-	const lineLimit = 500;
+    let covers = null;
+    let contents = null;
+    let timeout = void 0;
 
-	let covers = null;
-	let contents = null;
-	let timeout = void 0;
+    const addEnterKeyListener = (element) => {
+        element.addEventListener("keydown", (evt) => {
+            if (evt.key === "Enter") {
+                evt.preventDefault();
+                search(evt);
+            }
+        });
+    };
+    
+    addEnterKeyListener(keywordInput1);
+    addEnterKeyListener(keywordInput2);
+    addEnterKeyListener(keywordInput3);
 
-	keyword_input1.addEventListener("keydown", (evt) => {
-		const KEYCODE_ENTER = 13;
-		if (evt.keyCode === KEYCODE_ENTER) {
-			evt.preventDefault();
-			search(evt);
-		}
-	});
+    const createLine = (cover, line) => {
+        const tr = document.createElement("tr");
+        table.appendChild(tr);
 
-	// display a line of the table
-	const createLine = (cover, line) => {
-		let tr = document.createElement("tr");
-		table.appendChild(tr);
+        const cellContents = [
+            cover[3], cover[4], line[0], line[1],
+            line[3], line[4], line[5], line[7]
+        ];
 
-		tr.innerHTML += `<td>${cover[3]}</td>`;
-		tr.innerHTML += `<td>${line[0]}</td>`;
-		tr.innerHTML += `<td>${line[1]}</td>`;
-		tr.innerHTML += `<td>${line[3]}</td>`;
-		tr.innerHTML += `<td>${line[4]}</td>`;
-		tr.innerHTML += `<td>${line[5]}</td>`;
-		// tr.innerHTML += `<td>${line[6]}</td>`;
-		tr.innerHTML += `<td>${line[7]}</td>`;
-	}
+        cellContents.forEach(content => {
+            const td = document.createElement("td");
+            td.textContent = content;
+            tr.appendChild(td);
+        });
+    };
 
-	// update the table
-	const updateTable = (options, index, displayedIndex) => {
-		let regex = new RegExp(options.keyword, "igu");
+    const updateTable = (options, index = 0, displayedIndex = 0) => {
+        if (isIOS && displayedIndex >= lineLimit) return;
 
-		index = typeof index === 'undefined' ? 0 : index;
-		displayedIndex = typeof displayedIndex === "undefined" ? 0 : displayedIndex;
+        for (; index < contents.length; index++) {
+            const line = contents[index];
 
-		if (isIOS && displayedIndex >= lineLimit)
-			return;
+            // Show number of results
+            resultElement.textContent = displayedIndex;
 
-		for (; ;) {
-			const line = contents[index];
+            const items = [line[3], line[4], line[7]]
+            const inputString = items.join("\t")
+            const matchesKeyword = searchKeywords(inputString, options.keyword);
 
-			if (typeof line === 'undefined') {
-				return;
-			}
+            if (options.keyword && !matchesKeyword) continue;
+            if (keywordInput2.value && Number(line[0]) < keywordInput2.value) continue;
+            if (keywordInput3.value && Number(line[0]) > keywordInput3.value) continue;
 
-			// keyword
-			// let matchesName = checkName.checked ? line[3].match(regex) == null : true;
-			// let matchesTitle = checkTitle.checked ? line[4].match(regex) == null : true;
-			// let matchesRemarks = checkRemarks.checked ? line[7].match(regex) == null : true;
+            const cover = covers.find(n => n[2] == line[0]);
+            if (!cover) continue;
 
-			// let matchesKeyword = options.keyword != "" &&
-			// (matchesName && matchesTitle && matchesRemarks);
+            createLine(cover, line);
+            timeout = setTimeout(() => updateTable(options, index + 1, displayedIndex + 1), 0);
+            break;
+        }
+    };
 
-			let matchesName = checkName.checked ? line[3].match(regex) != null : false;
-			let matchesTitle = checkTitle.checked ? line[4].match(regex) != null : false;
-			let matchesRemarks = checkRemarks.checked ? line[7].match(regex) != null : false;
+    const makeCSV = (table_, filename) => {
+        const csv = Array.from(table_.rows)
+            .map(row => Array.from(row.cells)
+                .map(cell => `"${cell.textContent.replace(/"/g, '""')}"`)
+                .join(',')
+            )
+            .join('\n');
 
-			let matchesKeyword = matchesName || matchesTitle || matchesRemarks;
+        const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv' });
 
+        if (window.navigator.msSaveBlob) {
+            window.navigator.msSaveBlob(blob, filename);
+        } else {
+            downloadLink.download = filename;
+            downloadLink.href = window.URL.createObjectURL(blob);
+        }
+    };
 
-			// if (matchesKeyword) {
-			// 	index++;
-			// 	continue;
-			// }
+    const downloadCSV = () => {
+        makeCSV(document.querySelector("main table"), `ips_${getDateString()}.csv`);
+    };
 
-			// if (options.keyword != "") {
-			// 	index++;
-			// 	continue;
-			// }
+    const getDateString = () => {
+        const date = new Date();
+        return [
+            date.getFullYear(),
+            ("00" + (date.getMonth() + 1)).slice(-2),
+            ("00" + date.getDate()).slice(-2),
+            ("00" + date.getHours()).slice(-2),
+            ("00" + date.getMinutes()).slice(-2),
+            ("00" + date.getSeconds()).slice(-2)
+        ].join('');
+    };
 
-			// if (keyword_input2.value != "" && Number(line[0]) < keyword_input2.value) {
-			// 	index++;
-			// 	continue;
-			// }
+    const search = (e) => {
+        if (e) e.stopPropagation();
+        table.innerHTML = '';
 
-			// if (keyword_input3.value != "" && Number(line[0]) > keyword_input3.value) {
-			// 	index++;
-			// 	continue;
-			// }
+        if (!isValidString(keywordInput1.value) && !keywordInput2.value && !keywordInput3.value) {
+            // Initialize result
+            resultElement.textContent = 0;
+            return;
+        }
 
-			// var cover = covers.find((n) => n[2] == line[0]);
+        clearTimeout(timeout);
+        updateTable({ keyword: keywordInput1.value });
+    };
 
-			// console.log('発行年: %s 通巻号数: %s',cover[3],cover[2]);
+    document.getElementById("submit").onclick = search;
+    downloadLink.onclick = downloadCSV;
 
-			if (options.keyword != "" && !matchesKeyword) {
-				index++;
-				continue;
-			}
+    fetch("Covers.json")
+        .then(response => response.json())
+        .then(json => { covers = json; search(null); });
 
-			if (keyword_input2.value != "" && Number(line[0]) < keyword_input2.value) {
-				index++;
-				continue;
-			}
-
-			if (keyword_input3.value != "" && Number(line[0]) > keyword_input3.value) {
-				index++;
-				continue;
-			}
-
-			var cover = covers.find((n) => n[2] == line[0]);
-
-			if (typeof cover === 'undefined') {
-				index++;
-				continue;
-			}
-
-			createLine(cover, line);
-			timeout = setTimeout(() => updateTable(options, index + 1, ++displayedIndex), 0);
-			break;
-		}
-	}
-
-	// convert table data to CSV file with utf-8 BOM
-	const makeCSV = (a, table_, filename) => {
-		var escaped = /,|\r?\n|\r|"/;
-		var e = /"/g;
-
-		var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-		var csv = [], row = [], field, r, c;
-		for (r = 0; r < table_.rows.length; r++) {
-			row.length = 0;
-			for (c = 0; c < table_.rows[r].cells.length; c++) {
-				field = table_.rows[r].cells[c].innerText.trim();
-				row.push(escaped.test(field) ? '"' + field.replace(e, '""') + '"' : field);
-			}
-			csv.push(row.join(','));
-		}
-		var blob = new Blob([bom, csv.join('\n')], { 'type': 'text/csv' });
-
-		if (window.navigator.msSaveBlob) {
-			// IE
-			window.navigator.msSaveBlob(blob, filename);
-		} else {
-			a.download = filename;
-			a.href = window.URL.createObjectURL(blob);
-		}
-	}
-
-	// download CSV file: `ips_YYYYMMDDhhmmdd.csv`
-	const downloadCSV = () => {
-		makeCSV(
-			downloadLink, document.querySelector("main table"), `ips_${getDateString()}.csv`);
-	}
-
-	// get YYYYMMDDhhmmdd
-	const getDateString = () => {
-		let date = new Date();
-		let Y = date.getFullYear();
-		let M = ("00" + (date.getMonth() + 1)).slice(-2);
-		let D = ("00" + date.getDate()).slice(-2);
-		let h = ('0' + date.getHours()).slice(-2);
-		let m = ('0' + date.getMinutes()).slice(-2);
-		let d = ('0' + date.getSeconds()).slice(-2);
-
-		return Y + M + D + h + m + d;
-	}
-
-	// search
-	const search = (e) => {
-		// clear tbody contents
-		table.innerHTML = '';
-
-		if (e !== null) {
-			e.stopPropagation();
-		}
-		let options = {};
-
-		if (keyword_input1.value === ''　&&
-			keyword_input2.value === '' &&
-			keyword_input3.value === '')
-			return;
-		options.keyword = keyword_input1.value;
-		// keyword_input2
-		// console.log(keyword_input2.value);
-
-		clearTimeout(timeout);
-
-		updateTable(options);
-	}
-
-	let submit = document.getElementById("submit");
-	submit.onclick = search;
-	downloadLink.onclick = downloadCSV;
-
-	fetch("Covers.json")
-		.then(response => response.json())
-		.then(json => { covers = json; search(null); });
-
-	fetch("Contents.json")
-		.then(response => response.json())
-		.then(json => { contents = json; search(null); });
+    fetch("Contents.json")
+        .then(response => response.json())
+        .then(json => { contents = json; search(null); });
 };
+
+function searchKeywords(inputString, keywords) {
+    // Split keywords with spaces
+    const keywordArray = keywords.split(/\s+|　+|\t/);
+
+    // Check if each keyword is included in the string
+    for (let keyword of keywordArray) {
+        const regex = new RegExp(keyword, 'iu'); // Case insensitive, Unicode compatible
+        if (!regex.test(inputString)) {
+            return false; // Returns false if any keyword is not included
+        }
+    }
+    return true; // Returns true if all keywords are included
+}
+
+function isValidString(str) {
+    // Matches if the string contains only half-width spaces, full-width spaces, or tabs
+    const regex = /^[\s　\t]*$/;
+    // Check if it matches a regular expression and return the result
+    return !regex.test(str);
+}

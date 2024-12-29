@@ -1,64 +1,59 @@
 <!doctype html>
-<html>
-
+<html lang="ja">
 <head>
-	<title>食虫植物研究会 / 会誌データベース</title>
-	<meta charset="utf-8">
-	<link href="style.css" rel="stylesheet" />
-	<script src="script.js"></script>
+    <title>食虫植物研究会 - 会誌検索</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet" />
+    <script src="script.js" defer></script>
 </head>
-
 <body>
-	<header>
-		<div class="content">
-				<h1>
-					<p>食虫植物研究会 / 会誌検索システム</p>
-				</h1>
-			<form>
-				<p>
-					<span class="h4">検索語</span>
-					<input type="text" placeholder="検索語を入力" id="input1" /> <a href="#" id="submit">検索</a>
-					<!-- <label><input type="checkbox" id="check-volume" checked />通巻</label> -->
-					<label><input type="checkbox" id="check-name" checked />氏名</label>
-					<label><input type="checkbox" id="check-title" checked />題名</label>
-					<label><input type="checkbox" id="check-remarks" checked />備考</label>
-				</p>
-				<p>
-					<span class="h4">通巻　</span>
-					<input type="number" min="1" placeholder="自" id="input2" />
-					<span class="h4">～</span>
-					<input type="number" min="1" placeholder="至" id="input3" />
-				</p>
-				<!-- <p>
-					<a href="#" id="clear">検索条件をクリア</a>
-				</p> -->
-			</form>
-		</div>
-	</header>
-
-	<div id="page">
-		<main>
-			<table>
-				<thead>
-					<tr>
-						<th>発行年</th>
-						<th>通巻</th>
-						<th>区分</th>
-						<th>氏名</th>
-						<th>題名</th>
-						<th>頁</th>
-						<th>備考</th>
-					</tr>
-				</thead>
-				<tbody>	
-				</tbody>
-			</table>
-		</main>
-		<footer>
-			<a href="https://github.com/tsajiki/ips-search">食虫植物研究会 / 会誌検索システム</a>
-			/ <a href="javascript:void(0)" id="download">CSVダウンロード</a>
-		</footer>
-	</div>
+    <header>
+        <div class="content">
+            <h1>食虫植物研究会 - 会誌検索</h1>
+            <form>
+                <div>
+                    <input type="text" placeholder="氏名、題名、備考を検索" id="input1">
+                    <button type="button" id="submit" title="検索">
+                        <img src="search-icon.png" alt="検索" class="icon">
+                    </button>
+                </div>
+                <div>
+                    <label for="input2" class="h4">通巻：</label>
+                    <input type="number" min="1" placeholder="自" id="input2">
+                    <span class="h4">～</span>
+                    <input type="number" min="1" placeholder="至" id="input3">
+                </div>
+                <div>
+                    <label class="h4">件数：</label>
+                    <span id="result"></span>
+                </div>
+            </form>
+        </div>
+    </header>
+    <div id="page">
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th>年</th>
+                        <th>月</th>
+                        <th>巻</th>
+                        <th>区分</th>
+                        <th>氏名</th>
+                        <th>題名</th>
+                        <th>頁</th>
+                        <th>備考</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </main>
+        <footer>
+            <a href="https://github.com/tsajiki/ips-search">食虫植物研究会 - 会誌検索システム</a>
+            / <a href="javascript:void(0)" id="download">CSVダウンロード</a>
+        </footer>
+    </div>
 </body>
-
 </html>
