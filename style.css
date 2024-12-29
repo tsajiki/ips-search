@@ -130,7 +130,12 @@ tr *:nth-child(6) { width: 6rem; }
 tr *:nth-child(7) { width: 4%; text-align: right; }
 tr *:nth-child(8) { width: 6rem; }
 
+/* For smartphones */
 @media (max-width: 600px) {
+    header .content {
+        width: 80%;
+    }
+
     th, td {
         padding: 0.2rem;
         font-size: 0.8rem;
