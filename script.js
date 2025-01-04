@@ -64,7 +64,7 @@ window.onload = function () {
             if (!cover) continue;
 
             createLine(cover, line);
-            timeout = setTimeout(() => updateTable(options, index + 1, displayedIndex + 1), 0);
+            timeout = setTimeout(() => updateTable(options, ++index, ++displayedIndex), 0);
             break;
         }
     };
@@ -122,11 +122,11 @@ window.onload = function () {
 
     fetch("Covers.json")
         .then(response => response.json())
-        .then(json => { covers = json; search(null); });
+        .then(json => { covers = json; });
 
     fetch("Contents.json")
         .then(response => response.json())
-        .then(json => { contents = json; search(null); });
+        .then(json => { contents = json; });
 };
 
 function searchKeywords(inputString, keywords) {

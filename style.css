@@ -3,7 +3,7 @@ html, body {
     font-family: sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #fff;
 }
 
 /* Header styles */
@@ -35,7 +35,7 @@ header h1 {
 header form {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* Narrow the gap between top and bottom */
+    gap: 10px; /* Narrow the gap between top and bottom */
 }
 
 header form div {
@@ -61,20 +61,37 @@ header input[type="number"] {
     text-align: right;
 }
 
-button#submit {
-    color: #fff;
-    background: #fff;
-    padding: 0.3rem;
-    border-radius: 4px;
-    text-decoration: none;
-    display: inline-block;
-    border: none;
-    cursor: pointer;
+.search-container {
+    display: flex;
+    justify-content: center;
 }
 
-button#submit .icon {
+.search-box {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-button {
+    padding: 10px;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-button img {
     width: 1.3rem; /* Adjust icon size */
     height: 1.3rem;
+}
+
+.search-button:hover {
+    background-color: #ccc;
 }
 
 #result {
