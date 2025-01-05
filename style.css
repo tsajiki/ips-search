@@ -163,6 +163,20 @@ tr *:nth-child(8) { width: 6rem; }
     }
 }
 
+main #download {
+    font-size: 0.9rem;
+    text-align: center;
+    background: LightGreen;
+    color: black;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 0rem 1rem;
+}
+
+main #download:hover {
+    text-decoration: underline;
+}
+
 /* Footer styles */
 footer {
     text-align: center;
